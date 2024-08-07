@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: dev.schema.createSequences
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/1.createSequences.sql
+
+  - changeSet:
+      id: dev.schema.createTables
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/2.createTables.sql
