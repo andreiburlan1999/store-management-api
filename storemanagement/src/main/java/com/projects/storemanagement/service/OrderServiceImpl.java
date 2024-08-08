@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
                     orderProduct.setId(new OrderProductPk(order.getId(), product.getId()));
                     orderProduct.setProduct(product);
                     orderProduct.setQuantity(dto.getQuantity());
-                    orderProduct.setPrice(dto.getPrice());
+                    orderProduct.setPrice(product.getPrice());
                     return orderProduct;
                 })
                 .collect(Collectors.toList());

@@ -79,7 +79,6 @@ public class OrderServiceImplTest {
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
-        orderProductDto.setPrice(100.0);
         List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
@@ -97,7 +96,7 @@ public class OrderServiceImplTest {
         assertNotNull(createdOrder);
         assertEquals(8, product.getQuantity());
         verify(productRepository, times(1)).save(product);
-        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(orderRepository, times(2)).save(any(Order.class));
     }
 
     @Test
@@ -105,7 +104,6 @@ public class OrderServiceImplTest {
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
-        orderProductDto.setPrice(100.0);
         List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
@@ -122,7 +120,6 @@ public class OrderServiceImplTest {
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
-        orderProductDto.setPrice(100.0);
         List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
@@ -143,7 +140,6 @@ public class OrderServiceImplTest {
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
-        orderProductDto.setPrice(100.0);
         List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
