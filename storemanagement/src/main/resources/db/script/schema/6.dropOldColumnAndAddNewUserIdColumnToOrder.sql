@@ -1,8 +1,8 @@
-ALTER TABLE `order`
+ALTER TABLE "order"
 DROP COLUMN customer_id;
 
-ALTER TABLE `order`
+ALTER TABLE "order"
 ADD user_id NUMBER NOT NULL;
 
-ALTER TABLE `order`
-ADD CONSTRAINT FK__ORDER__USER FOREIGN KEY (user_id) REFERENCES `user`(id);
+ALTER TABLE "order"
+ADD CONSTRAINT FK__ORDER__USER FOREIGN KEY (user_id) REFERENCES "user"(id);

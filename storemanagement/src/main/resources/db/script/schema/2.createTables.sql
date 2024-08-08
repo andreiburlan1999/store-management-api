@@ -8,7 +8,7 @@ CREATE TABLE customer (
 );
 
 -- ChangeSet for creating User table
-CREATE TABLE `user` (
+CREATE TABLE "user" (
     id NUMBER,
     username VARCHAR2(50) NOT NULL,
     password VARCHAR2(100) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE product (
 );
 
 -- ChangeSet for creating Order table
-CREATE TABLE `order` (
+CREATE TABLE "order" (
     id NUMBER,
     customer_id NUMBER NOT NULL,
     CONSTRAINT PK_ORDER PRIMARY KEY (id),
@@ -52,6 +52,6 @@ CREATE TABLE order_product (
     quantity NUMBER NOT NULL,
     price NUMBER NOT NULL,
     CONSTRAINT PK_ORDER_ITEM PRIMARY KEY (order_id, product_id),
-    CONSTRAINT FK__ORDER_PRODUCT__ORDER FOREIGN KEY (order_id) REFERENCES `order`(id),
+    CONSTRAINT FK__ORDER_PRODUCT__ORDER FOREIGN KEY (order_id) REFERENCES "order"(id),
     CONSTRAINT FK__ORDER_PRODUCT__PRODUCT FOREIGN KEY (product_id) REFERENCES product(id)
 );
