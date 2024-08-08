@@ -45,10 +45,10 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public User getCurrentUser() {
+    public ResponseEntity<User> getCurrentUser() {
         User user = userService.getCurrentUser();
         user.setPassword("*");
-        return user;
+        return ResponseEntity.ok(user);
     }
 
 }
