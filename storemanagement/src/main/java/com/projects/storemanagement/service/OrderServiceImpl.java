@@ -40,8 +40,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order create(CreateOrderDTO createOrderDto) {
         Order order = new Order();
-        order.setUser(userRepository.findById(createOrderDto.getCustomerId())
-                .orElseThrow(() -> new UserNotFoundException(createOrderDto.getCustomerId())));
+        order.setUser(userRepository.findById(createOrderDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(createOrderDto.getUserId())));
 
         List<OrderProduct> orderProducts = getOrderProductList(createOrderDto);
         if(orderProducts.isEmpty()) {
@@ -50,6 +50,11 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderProducts(orderProducts);
 
         return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> findByUser(Long userId) {
+        return orderRepository.findByUserId(userId);
     }
 
     private List<OrderProduct> getOrderProductList(CreateOrderDTO createOrderDto) {

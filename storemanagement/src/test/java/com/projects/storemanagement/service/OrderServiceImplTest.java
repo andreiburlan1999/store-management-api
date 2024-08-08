@@ -78,7 +78,7 @@ public class OrderServiceImplTest {
     @Test
     void testCreate() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setCustomerId(1L);
+        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
@@ -106,7 +106,7 @@ public class OrderServiceImplTest {
     @Test
     void testCreateThrowsUserNotFoundException() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setCustomerId(1L);
+        createOrderDto.setUserId(1L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -116,7 +116,7 @@ public class OrderServiceImplTest {
     @Test
     void testCreateThrowsProductNotFoundException() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setCustomerId(1L);
+        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
@@ -135,7 +135,7 @@ public class OrderServiceImplTest {
     @Test
     void testCreateThrowsInsufficientProductQuantityException() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setCustomerId(1L);
+        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
@@ -157,7 +157,7 @@ public class OrderServiceImplTest {
     @Test
     void testCreateThrowsProductsInOrderNotFound() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setCustomerId(1L);
+        createOrderDto.setUserId(1L);
         createOrderDto.setProducts(Collections.emptyList());
 
         User user = new User();
@@ -166,6 +166,20 @@ public class OrderServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         assertThrows(ProductsInOrderNotFound.class, () -> orderService.create(createOrderDto));
+    }
+
+    @Test
+    void testFindByUser() {
+        Order order1 = new Order();
+        order1.setId(1L);
+        Order order2 = new Order();
+        order2.setId(2L);
+        when(orderRepository.findByUserId(1L)).thenReturn(List.of(order1, order2));
+
+        List<Order> products = orderService.findByUser(1L);
+
+        assertNotNull(products);
+        assertEquals(2, products.size());
     }
 
 }

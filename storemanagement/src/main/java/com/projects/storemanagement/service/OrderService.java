@@ -10,5 +10,6 @@ public interface OrderService {
     Order findById(Long id);
     List<Order> findAll();
     Order create(CreateOrderDTO createOrderDto);
+    List<Order> findByUser(Long userId);
 
 }

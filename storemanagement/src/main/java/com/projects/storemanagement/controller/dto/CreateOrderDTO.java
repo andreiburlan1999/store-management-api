@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class CreateOrderDTO {
 
-    private Long customerId;
+    private Long userId;
     private List<OrderProductDTO> products;
 
 }
