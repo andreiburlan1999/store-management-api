@@ -18,37 +18,37 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<Product> findById(@PathVariable Long id) {
         Product product = productService.findById(id);
         return ResponseEntity.ok(product);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> findAll() {
         List<Product> products = productService.findAll();
         return ResponseEntity.ok(products);
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<Product> create(@RequestBody ProductDTO productDTO) {
         Product createdProduct = productService.create(productDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
         Product updatedProduct = productService.update(id, productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> disableProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> disable(@PathVariable Long id) {
         productService.disable(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<Product>> findByCategory(@PathVariable Long categoryId) {
         List<Product> products = productService.findByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
