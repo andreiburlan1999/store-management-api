@@ -1,10 +1,7 @@
 package com.projects.storemanagement.service;
 
 import com.projects.storemanagement.controller.dto.OrderProductDTO;
-import com.projects.storemanagement.entity.Order;
-import com.projects.storemanagement.entity.OrderProduct;
-import com.projects.storemanagement.entity.Product;
-import com.projects.storemanagement.entity.User;
+import com.projects.storemanagement.entity.*;
 import com.projects.storemanagement.exception.*;
 import com.projects.storemanagement.repository.OrderRepository;
 import com.projects.storemanagement.repository.ProductRepository;
@@ -44,8 +41,9 @@ public class OrderServiceImpl implements OrderService {
     public Order create(List<OrderProductDTO> orderProductDTOList, User authenticatedUser) {
         Order order = new Order();
         order.setUser(authenticatedUser);
+        orderRepository.save(order); // to have the PK generated
 
-        List<OrderProduct> orderProducts = getOrderProductList(orderProductDTOList);
+        List<OrderProduct> orderProducts = getOrderProductList(orderProductDTOList, order);
         if(orderProducts.isEmpty()) {
             throw new ProductsInOrderNotFoundException();
         }
@@ -59,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByUserId(userId);
     }
 
-    private List<OrderProduct> getOrderProductList(List<OrderProductDTO> orderProductDTOList) {
+    private List<OrderProduct> getOrderProductList(List<OrderProductDTO> orderProductDTOList, Order order) {
         return orderProductDTOList.stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.getProductId())
@@ -77,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
                     productRepository.save(product);
 
                     OrderProduct orderProduct = new OrderProduct();
+                    orderProduct.setId(new OrderProductPk(order.getId(), product.getId()));
                     orderProduct.setProduct(product);
                     orderProduct.setQuantity(dto.getQuantity());
                     orderProduct.setPrice(dto.getPrice());
