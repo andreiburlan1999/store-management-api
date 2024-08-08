@@ -5,6 +5,7 @@ import com.projects.storemanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         User user = userService.findById(id);
         user.setPassword("*");
@@ -24,6 +26,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> findAll() {
         List<User> users = userService.findAll();
         users.forEach(user -> user.setPassword("*"));
@@ -31,6 +34,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> create(@RequestBody User user) {
         User createdUser = userService.create(user);
         createdUser.setPassword("*");
@@ -38,6 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
         User updatedUser = userService.update(id, user);
         updatedUser.setPassword("*");
@@ -45,6 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/current")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<User> getCurrentUser() {
         User user = userService.getCurrentUser();
         user.setPassword("*");

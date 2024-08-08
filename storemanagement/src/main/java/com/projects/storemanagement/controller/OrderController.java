@@ -8,6 +8,7 @@ import com.projects.storemanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class OrderController {
     private UserService userService;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> findById(@PathVariable Long id) {
         Order order = orderService.findById(id);
         order.getUser().setPassword("*");
@@ -31,6 +33,7 @@ public class OrderController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Order>> findAll() {
         List<Order> orders = orderService.findAll();
         orders.forEach(order -> order.getUser().setPassword("*"));
@@ -38,6 +41,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> create(@RequestBody List<OrderProductDTO> orderProductDTOList, Authentication authentication) {
         User authenticatedUser = userService.getCurrentUser();
         Order createdOrder = orderService.create(orderProductDTOList, authenticatedUser);
@@ -46,6 +50,7 @@ public class OrderController {
     }
 
     @GetMapping("/user-orders")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<List<Order>> findByCurrentUser() {
         User authenticatedUser = userService.getCurrentUser();
         List<Order> orders = orderService.findByUser(authenticatedUser.getId());
