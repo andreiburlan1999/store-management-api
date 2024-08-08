@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class CustomerServiceImplTest {
@@ -72,7 +73,7 @@ public class CustomerServiceImplTest {
         customer.setName("New Customer");
         customer.setEmail("NonExistingEmail");
         when(customerRepository.existsByEmail("NonExistingEmail")).thenReturn(false);
-        when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         Customer createdCustomer = customerService.create(customer);
 
@@ -87,7 +88,7 @@ public class CustomerServiceImplTest {
         customer.setName("New Customer");
         customer.setEmail("NonValidEmail");
         when(customerRepository.existsByEmail("NonValidEmail")).thenReturn(true);
-        when(customerRepository.save(customer)).thenReturn(customer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
 
         assertThrows(EmailAlreadyExistsException.class, () -> customerService.create(customer));
     }
@@ -107,7 +108,7 @@ public class CustomerServiceImplTest {
         when(customerRepository.existsByEmail(updatedCustomer.getEmail())).thenReturn(false);
         when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
 
-        when(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
         Customer result = customerService.update(1L, updatedCustomer);
 
@@ -130,7 +131,7 @@ public class CustomerServiceImplTest {
         when(customerRepository.existsByEmail(updatedCustomer.getEmail())).thenReturn(true);
         when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
 
-        when(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer);
+        when(customerRepository.save(any(Customer.class))).thenReturn(updatedCustomer);
 
         Customer result = customerService.update(1L, updatedCustomer);
 
