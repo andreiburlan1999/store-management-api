@@ -1,7 +1,7 @@
 package com.projects.storemanagement.service;
 
-import com.projects.storemanagement.controller.dto.CreateOrderDto;
-import com.projects.storemanagement.controller.dto.OrderProductDto;
+import com.projects.storemanagement.controller.dto.CreateOrderDTO;
+import com.projects.storemanagement.controller.dto.OrderProductDTO;
 import com.projects.storemanagement.entity.Order;
 import com.projects.storemanagement.entity.Product;
 import com.projects.storemanagement.entity.User;
@@ -77,9 +77,9 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreate() {
-        CreateOrderDto createOrderDto = new CreateOrderDto();
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setCustomerId(1L);
-        OrderProductDto orderProductDto = new OrderProductDto();
+        OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
         orderProductDto.setPrice(100.0);
@@ -105,7 +105,7 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreateThrowsUserNotFoundException() {
-        CreateOrderDto createOrderDto = new CreateOrderDto();
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setCustomerId(1L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
@@ -115,9 +115,9 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreateThrowsProductNotFoundException() {
-        CreateOrderDto createOrderDto = new CreateOrderDto();
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setCustomerId(1L);
-        OrderProductDto orderProductDto = new OrderProductDto();
+        OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
         orderProductDto.setPrice(100.0);
@@ -134,9 +134,9 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreateThrowsInsufficientProductQuantityException() {
-        CreateOrderDto createOrderDto = new CreateOrderDto();
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setCustomerId(1L);
-        OrderProductDto orderProductDto = new OrderProductDto();
+        OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
         orderProductDto.setPrice(100.0);
@@ -156,7 +156,7 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreateThrowsProductsInOrderNotFound() {
-        CreateOrderDto createOrderDto = new CreateOrderDto();
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setCustomerId(1L);
         createOrderDto.setProducts(Collections.emptyList());
 

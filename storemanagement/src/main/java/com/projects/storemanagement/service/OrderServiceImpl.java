@@ -1,6 +1,6 @@
 package com.projects.storemanagement.service;
 
-import com.projects.storemanagement.controller.dto.CreateOrderDto;
+import com.projects.storemanagement.controller.dto.CreateOrderDTO;
 import com.projects.storemanagement.entity.Order;
 import com.projects.storemanagement.entity.OrderProduct;
 import com.projects.storemanagement.entity.Product;
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order create(CreateOrderDto createOrderDto) {
+    public Order create(CreateOrderDTO createOrderDto) {
         Order order = new Order();
         order.setUser(userRepository.findById(createOrderDto.getCustomerId())
                 .orElseThrow(() -> new UserNotFoundException(createOrderDto.getCustomerId())));
@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
-    private List<OrderProduct> getOrderProductList(CreateOrderDto createOrderDto) {
+    private List<OrderProduct> getOrderProductList(CreateOrderDTO createOrderDto) {
         return createOrderDto.getProducts().stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.getProductId())
