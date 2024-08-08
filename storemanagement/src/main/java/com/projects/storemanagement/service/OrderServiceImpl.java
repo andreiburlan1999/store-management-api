@@ -1,9 +1,10 @@
 package com.projects.storemanagement.service;
 
-import com.projects.storemanagement.controller.dto.CreateOrderDTO;
+import com.projects.storemanagement.controller.dto.OrderProductDTO;
 import com.projects.storemanagement.entity.Order;
 import com.projects.storemanagement.entity.OrderProduct;
 import com.projects.storemanagement.entity.Product;
+import com.projects.storemanagement.entity.User;
 import com.projects.storemanagement.exception.*;
 import com.projects.storemanagement.repository.OrderRepository;
 import com.projects.storemanagement.repository.ProductRepository;
@@ -38,12 +39,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order create(CreateOrderDTO createOrderDto) {
+    public Order create(List<OrderProductDTO> orderProductDTOList, User authenticatedUser) {
         Order order = new Order();
-        order.setUser(userRepository.findById(createOrderDto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(createOrderDto.getUserId())));
+        order.setUser(authenticatedUser);
 
-        List<OrderProduct> orderProducts = getOrderProductList(createOrderDto);
+        List<OrderProduct> orderProducts = getOrderProductList(orderProductDTOList);
         if(orderProducts.isEmpty()) {
             throw new ProductsInOrderNotFoundException();
         }
@@ -57,8 +57,8 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByUserId(userId);
     }
 
-    private List<OrderProduct> getOrderProductList(CreateOrderDTO createOrderDto) {
-        return createOrderDto.getProducts().stream()
+    private List<OrderProduct> getOrderProductList(List<OrderProductDTO> orderProductDTOList) {
+        return orderProductDTOList.stream()
                 .map(dto -> {
                     Product product = productRepository.findById(dto.getProductId())
                             .orElseThrow(() -> new ProductNotFoundException(dto.getProductId()));

@@ -1,6 +1,5 @@
 package com.projects.storemanagement.service;
 
-import com.projects.storemanagement.controller.dto.CreateOrderDTO;
 import com.projects.storemanagement.controller.dto.OrderProductDTO;
 import com.projects.storemanagement.entity.Order;
 import com.projects.storemanagement.entity.Product;
@@ -77,13 +76,11 @@ public class OrderServiceImplTest {
 
     @Test
     void testCreate() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
         orderProductDto.setPrice(100.0);
-        createOrderDto.setProducts(List.of(orderProductDto));
+        List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
         user.setId(1L);
@@ -92,11 +89,10 @@ public class OrderServiceImplTest {
         product.setQuantity(10);
         product.setStatus("enabled");
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(orderRepository.save(any(Order.class))).thenReturn(new Order());
 
-        Order createdOrder = orderService.create(createOrderDto);
+        Order createdOrder = orderService.create(orderProductDTOList, user);
 
         assertNotNull(createdOrder);
         assertEquals(8, product.getQuantity());
@@ -105,24 +101,12 @@ public class OrderServiceImplTest {
     }
 
     @Test
-    void testCreateThrowsUserNotFoundException() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
-
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> orderService.create(createOrderDto));
-    }
-
-    @Test
     void testCreateThrowsProductNotFoundException() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(2);
         orderProductDto.setPrice(100.0);
-        createOrderDto.setProducts(List.of(orderProductDto));
+        List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
         user.setId(1L);
@@ -130,18 +114,16 @@ public class OrderServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ProductNotFoundException.class, () -> orderService.create(createOrderDto));
+        assertThrows(ProductNotFoundException.class, () -> orderService.create(orderProductDTOList, user));
     }
 
     @Test
     void testCreateThrowsProductIsNotAvailableException() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
         orderProductDto.setPrice(100.0);
-        createOrderDto.setProducts(List.of(orderProductDto));
+        List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
         user.setId(1L);
@@ -153,18 +135,16 @@ public class OrderServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(ProductIsNotAvailableException.class, () -> orderService.create(createOrderDto));
+        assertThrows(ProductIsNotAvailableException.class, () -> orderService.create(orderProductDTOList, user));
     }
 
     @Test
     void testCreateThrowsInsufficientProductQuantityException() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
         OrderProductDTO orderProductDto = new OrderProductDTO();
         orderProductDto.setProductId(1L);
         orderProductDto.setQuantity(20);
         orderProductDto.setPrice(100.0);
-        createOrderDto.setProducts(List.of(orderProductDto));
+        List<OrderProductDTO> orderProductDTOList = List.of(orderProductDto);
 
         User user = new User();
         user.setId(1L);
@@ -176,21 +156,17 @@ public class OrderServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(InsufficientProductQuantityException.class, () -> orderService.create(createOrderDto));
+        assertThrows(InsufficientProductQuantityException.class, () -> orderService.create(orderProductDTOList, user));
     }
 
     @Test
     void testCreateThrowsProductsInOrderNotFound() {
-        CreateOrderDTO createOrderDto = new CreateOrderDTO();
-        createOrderDto.setUserId(1L);
-        createOrderDto.setProducts(Collections.emptyList());
-
         User user = new User();
         user.setId(1L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        assertThrows(ProductsInOrderNotFoundException.class, () -> orderService.create(createOrderDto));
+        assertThrows(ProductsInOrderNotFoundException.class, () -> orderService.create(Collections.emptyList(), user));
     }
 
     @Test
