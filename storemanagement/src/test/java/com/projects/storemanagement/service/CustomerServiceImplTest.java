@@ -140,7 +140,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    void testUpdateThrowsExistingCustomerException() {
+    void testUpdateThrowsNonExistingCustomerException() {
         Customer nonExistingCustomer = new Customer();
         nonExistingCustomer.setId(2L);
         nonExistingCustomer.setName("Non-existent Customer");
