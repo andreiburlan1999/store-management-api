@@ -12,3 +12,10 @@ databaseChangeLog:
       changes:
         - sqlFile:
             path: db/script/schema/2.createTables.sql
+
+  - changeSet:
+      id: dev.schema.alterTableUniqueUsernameColumn
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/3.alterTableUniqueUsernameColumn.sql
