@@ -3,10 +3,8 @@ package com.projects.storemanagement.service;
 import com.projects.storemanagement.controller.dto.CreateOrderDto;
 import com.projects.storemanagement.entity.Order;
 import com.projects.storemanagement.entity.OrderProduct;
-import com.projects.storemanagement.exception.OrderNotFoundException;
-import com.projects.storemanagement.exception.ProductNotFoundException;
-import com.projects.storemanagement.exception.ProductsInOrderNotFound;
-import com.projects.storemanagement.exception.UserNotFoundException;
+import com.projects.storemanagement.entity.Product;
+import com.projects.storemanagement.exception.*;
 import com.projects.storemanagement.repository.OrderRepository;
 import com.projects.storemanagement.repository.ProductRepository;
 import com.projects.storemanagement.repository.UserRepository;
@@ -55,9 +53,18 @@ public class OrderServiceImpl implements OrderService {
     private List<OrderProduct> getOrderProductList(CreateOrderDto createOrderDto) {
         return createOrderDto.getProducts().stream()
                 .map(dto -> {
+                    Product product = productRepository.findById(dto.getProductId())
+                            .orElseThrow(() -> new ProductNotFoundException(dto.getProductId()));
+
+                    if(product.getQuantity() < dto.getQuantity()) {
+                        throw new InsufficientProductQuantityException(dto.getProductId(), dto.getQuantity());
+                    }
+
+                    product.setQuantity(product.getQuantity() - dto.getQuantity());
+                    productRepository.save(product);
+
                     OrderProduct orderProduct = new OrderProduct();
-                    orderProduct.setProduct(productRepository.findById(dto.getProductId())
-                            .orElseThrow(() -> new ProductNotFoundException(dto.getProductId())));
+                    orderProduct.setProduct(product);
                     orderProduct.setQuantity(dto.getQuantity());
                     orderProduct.setPrice(dto.getPrice());
                     return orderProduct;
