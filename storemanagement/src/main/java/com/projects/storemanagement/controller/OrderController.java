@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<Order> create(@RequestBody List<OrderProductDTO> orderProductDTOList, Authentication authentication) {
         User authenticatedUser = userService.getCurrentUser();
         Order createdOrder = orderService.create(orderProductDTOList, authenticatedUser);
