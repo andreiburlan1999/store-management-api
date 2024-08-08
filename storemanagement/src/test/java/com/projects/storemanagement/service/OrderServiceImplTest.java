@@ -165,7 +165,7 @@ public class OrderServiceImplTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        assertThrows(ProductsInOrderNotFound.class, () -> orderService.create(createOrderDto));
+        assertThrows(ProductsInOrderNotFoundException.class, () -> orderService.create(createOrderDto));
     }
 
     @Test

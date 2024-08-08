@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderProduct> orderProducts = getOrderProductList(createOrderDto);
         if(orderProducts.isEmpty()) {
-            throw new ProductsInOrderNotFound();
+            throw new ProductsInOrderNotFoundException();
         }
         order.setOrderProducts(orderProducts);
 
