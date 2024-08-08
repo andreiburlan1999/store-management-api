@@ -2,6 +2,7 @@ package com.projects.storemanagement.service;
 
 import com.projects.storemanagement.entity.Customer;
 import com.projects.storemanagement.exception.CustomerNotFoundException;
+import com.projects.storemanagement.exception.EmailAlreadyExistsException;
 import com.projects.storemanagement.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,8 @@ public class CustomerServiceImplTest {
         Customer customer = new Customer();
         customer.setId(1L);
         customer.setName("New Customer");
+        customer.setEmail("NonExistingEmail");
+        when(customerRepository.existsByEmail("NonExistingEmail")).thenReturn(false);
         when(customerRepository.save(customer)).thenReturn(customer);
 
         Customer createdCustomer = customerService.create(customer);
@@ -78,15 +81,31 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    void testCreateThrowsException() {
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("New Customer");
+        customer.setEmail("NonValidEmail");
+        when(customerRepository.existsByEmail("NonValidEmail")).thenReturn(true);
+        when(customerRepository.save(customer)).thenReturn(customer);
+
+        assertThrows(EmailAlreadyExistsException.class, () -> customerService.create(customer));
+    }
+
+    @Test
     void testUpdate() {
         Customer existingCustomer = new Customer();
         existingCustomer.setId(1L);
         existingCustomer.setName("Old Customer");
+        existingCustomer.setEmail("OldEmail");
         when(customerRepository.existsById(1L)).thenReturn(true);
 
         Customer updatedCustomer = new Customer();
         updatedCustomer.setId(1L);
         updatedCustomer.setName("Updated Customer");
+        updatedCustomer.setEmail("NewEmail");
+        when(customerRepository.existsByEmail(updatedCustomer.getEmail())).thenReturn(false);
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
 
         when(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer);
 
@@ -97,13 +116,54 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    void testUpdateThrowsException() {
+    void testUpdateWithSameEmail() {
+        Customer existingCustomer = new Customer();
+        existingCustomer.setId(1L);
+        existingCustomer.setName("Old Customer");
+        existingCustomer.setEmail("OldEmail");
+        when(customerRepository.existsById(1L)).thenReturn(true);
+
+        Customer updatedCustomer = new Customer();
+        updatedCustomer.setId(1L);
+        updatedCustomer.setName("Updated Customer");
+        updatedCustomer.setEmail("OldEmail");
+        when(customerRepository.existsByEmail(updatedCustomer.getEmail())).thenReturn(true);
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
+
+        when(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer);
+
+        Customer result = customerService.update(1L, updatedCustomer);
+
+        assertNotNull(result);
+        assertEquals("Updated Customer", result.getName());
+    }
+
+    @Test
+    void testUpdateThrowsExistingCustomerException() {
         Customer nonExistingCustomer = new Customer();
         nonExistingCustomer.setId(2L);
         nonExistingCustomer.setName("Non-existent Customer");
         when(customerRepository.existsById(2L)).thenReturn(false);
 
         assertThrows(CustomerNotFoundException.class, () -> customerService.update(2L, nonExistingCustomer));
+    }
+
+    @Test
+    void testUpdateThrowsExistingEmailException() {
+        Customer existingCustomer = new Customer();
+        existingCustomer.setId(1L);
+        existingCustomer.setName("Old Customer");
+        existingCustomer.setEmail("OldEmail");
+        when(customerRepository.existsById(1L)).thenReturn(true);
+
+        Customer updatedCustomer = new Customer();
+        updatedCustomer.setId(1L);
+        updatedCustomer.setName("Updated Customer");
+        updatedCustomer.setEmail("ExistingEmail");
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(existingCustomer));
+        when(customerRepository.existsByEmail(updatedCustomer.getEmail())).thenReturn(true);
+
+        assertThrows(EmailAlreadyExistsException.class, () -> customerService.update(1L, updatedCustomer));
     }
 
 }
