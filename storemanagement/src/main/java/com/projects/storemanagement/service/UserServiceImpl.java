@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
         user.setId(id);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(existingUser);
+        return userRepository.save(user);
     }
 
     @Override
@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
