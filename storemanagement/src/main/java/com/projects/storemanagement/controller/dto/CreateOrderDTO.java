@@ -5,9 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CreateOrderDto {
+public class CreateOrderDTO {
 
     private Long customerId;
-    private List<OrderProductDto> products;
+    private List<OrderProductDTO> products;
 
 }
