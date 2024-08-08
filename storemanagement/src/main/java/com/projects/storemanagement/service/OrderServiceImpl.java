@@ -10,11 +10,13 @@ import com.projects.storemanagement.repository.OrderRepository;
 import com.projects.storemanagement.repository.ProductRepository;
 import com.projects.storemanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
