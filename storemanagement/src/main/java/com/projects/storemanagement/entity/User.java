@@ -23,8 +23,10 @@ public class User {
 
     private String role;
 
-    @OneToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private String name;
+
+    private String email;
+
+    private String address;
 
 }

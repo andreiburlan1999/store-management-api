@@ -1,10 +1,14 @@
 package com.projects.storemanagement.service;
 
 import com.projects.storemanagement.entity.User;
+import com.projects.storemanagement.exception.EmailAlreadyExistsException;
 import com.projects.storemanagement.exception.UserNotFoundException;
 import com.projects.storemanagement.exception.UsernameAlreadyExistsException;
 import com.projects.storemanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +42,11 @@ public class UserServiceImpl implements UserService {
             throw new UsernameAlreadyExistsException(username);
         }
 
+        String email = user.getEmail();
+        if(userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
+
         user.setId(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -53,6 +62,9 @@ public class UserServiceImpl implements UserService {
         if(isUsernameNotValid(existingUser.getUsername(), user.getUsername())) {
             throw new UsernameAlreadyExistsException(user.getUsername());
         }
+        if(isEmailNotValid(existingUser.getEmail(), user.getEmail())) {
+            throw new EmailAlreadyExistsException(user.getEmail());
+        }
 
         user.setId(id);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -64,8 +76,22 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Optional<User> user = userRepository.findByUsername(userDetails.getUsername());
+            return user.orElseThrow(() -> new UserNotFoundException());
+        }
+        throw new UserNotFoundException();
+    }
+
     private boolean isUsernameNotValid(String oldUsername, String newUsername) {
         return (!oldUsername.equals(newUsername)) && userRepository.existsByUsername(newUsername);
+    }
+
+    private boolean isEmailNotValid(String oldEmail, String newEmail) {
+        return (!oldEmail.equals(newEmail)) && userRepository.existsByEmail(newEmail);
     }
 
 }

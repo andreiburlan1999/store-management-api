@@ -1,0 +1,6 @@
+ALTER TABLE `user`
+ADD (
+    name VARCHAR2(200) NOT NULL,
+    email VARCHAR2(200) NOT NULL UNIQUE,
+    address VARCHAR2(200) NOT NULL,
+);
