@@ -17,7 +17,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer findById(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id " + id));
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer update(Long id, Customer customer) {
         if (!customerRepository.existsById(id)) {
-            throw new CustomerNotFoundException("Customer not found with id " + id);
+            throw new CustomerNotFoundException(id);
         }
         customer.setId(id);
         return customerRepository.save(customer);
