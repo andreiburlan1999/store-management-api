@@ -6,6 +6,7 @@ import com.projects.storemanagement.repository.CategoryRepository;
 import com.projects.storemanagement.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,12 +31,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category create(Category category) {
         category.setId(null);
         return categoryRepository.save(category);
     }
 
     @Override
+    @Transactional
     public Category update(Long id, Category category) {
         if (!categoryRepository.existsById(id)) {
             throw new CategoryNotFoundException(id);

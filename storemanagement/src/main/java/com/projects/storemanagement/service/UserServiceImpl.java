@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User create(User user) {
         String username = user.getUsername();
         if(userRepository.existsByUsername(username)) {
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User update(Long id, User user) {
         if(!userRepository.existsById(id)) {
             throw new UserNotFoundException(id);
@@ -78,10 +81,9 @@ public class UserServiceImpl implements UserService {
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if(authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             Optional<User> user = userRepository.findByUsername(userDetails.getUsername());
-            return user.orElseThrow(() -> new UserNotFoundException());
+            return user.orElseThrow(UserNotFoundException::new);
         }
         throw new UserNotFoundException();
     }

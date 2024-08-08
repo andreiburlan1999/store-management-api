@@ -6,6 +6,7 @@ import com.projects.storemanagement.exception.ProductStatusIsNotValidException;
 import com.projects.storemanagement.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product create(Product product) {
         product.setId(null);
 
@@ -38,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product update(Long id, Product product) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException(id);
@@ -52,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void disableProduct(Long id) {
         Product product = findById(id);
         product.setStatus("disabled");
