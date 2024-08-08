@@ -19,3 +19,31 @@ databaseChangeLog:
       changes:
         - sqlFile:
             path: db/script/schema/3.alterTableUniqueUsernameColumn.sql
+
+  - changeSet:
+      id: dev.schema.dropTableCustomerSequenceAndForeignKey
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/4.dropTableCustomerSequenceAndForeignKey.sql
+
+  - changeSet:
+      id: dev.schema.addColumnsFromCustomerToUser
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/5.addColumnsFromCustomerToUser.sql
+
+  - changeSet:
+      id: dev.schema.dropOldColumnAndAddNewUserIdColumnToOrder
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/schema/6.dropOldColumnAndAddNewUserIdColumnToOrder.sql
+
+  - changeSet:
+      id: dev.data.insertDataForTest
+      author: andrei
+      changes:
+        - sqlFile:
+            path: db/script/data/1.insertDataForTest.sql
