@@ -90,6 +90,7 @@ public class OrderServiceImplTest {
         Product product = new Product();
         product.setId(1L);
         product.setQuantity(10);
+        product.setStatus("enabled");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
@@ -133,6 +134,29 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    void testCreateThrowsProductIsNotAvailableException() {
+        CreateOrderDTO createOrderDto = new CreateOrderDTO();
+        createOrderDto.setUserId(1L);
+        OrderProductDTO orderProductDto = new OrderProductDTO();
+        orderProductDto.setProductId(1L);
+        orderProductDto.setQuantity(20);
+        orderProductDto.setPrice(100.0);
+        createOrderDto.setProducts(List.of(orderProductDto));
+
+        User user = new User();
+        user.setId(1L);
+        Product product = new Product();
+        product.setId(1L);
+        product.setQuantity(10);
+        product.setStatus("disabled");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        assertThrows(ProductIsNotAvailableException.class, () -> orderService.create(createOrderDto));
+    }
+
+    @Test
     void testCreateThrowsInsufficientProductQuantityException() {
         CreateOrderDTO createOrderDto = new CreateOrderDTO();
         createOrderDto.setUserId(1L);
@@ -147,6 +171,7 @@ public class OrderServiceImplTest {
         Product product = new Product();
         product.setId(1L);
         product.setQuantity(10);
+        product.setStatus("enabled");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));

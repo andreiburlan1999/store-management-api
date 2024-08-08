@@ -63,6 +63,10 @@ public class OrderServiceImpl implements OrderService {
                     Product product = productRepository.findById(dto.getProductId())
                             .orElseThrow(() -> new ProductNotFoundException(dto.getProductId()));
 
+                    if(!product.getStatus().equals("enabled")) {
+                        throw new ProductIsNotAvailableException(product.getId());
+                    }
+
                     if(product.getQuantity() < dto.getQuantity()) {
                         throw new InsufficientProductQuantityException(dto.getProductId(), dto.getQuantity());
                     }
